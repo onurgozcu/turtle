@@ -1,0 +1,142 @@
+DROP DATABASE turtle_db;
+CREATE DATABASE IF NOT EXISTS turtle_db CHARACTER SET utf8mb4 COLLATE utf8mb4_turkish_ci;
+
+DROP TABLE IF EXISTS rents;
+DROP TABLE IF EXISTS owns;
+DROP TABLE IF EXISTS housemessages;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS housephotos;
+DROP TABLE IF EXISTS houses;
+DROP TABLE IF EXISTS districts;
+DROP TABLE IF EXISTS cities;
+DROP TABLE IF EXISTS countries;
+
+CREATE TABLE countries(
+    id int PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    name varchar(50) NOT NULL
+);
+
+INSERT INTO countries (name) VALUES ('Türkiye');
+
+CREATE TABLE cities(
+    id int PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    countryId int NOT NULL,
+    name varchar(50) NOT NULL,
+    FOREIGN KEY (countryId)
+    REFERENCES countries (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
+INSERT INTO cities (countryId, name) VALUES (1, 'Eskişehir');
+
+CREATE TABLE districts(
+    id int PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    cityId int NOT NULL,
+    name varchar(50) NOT NULL,
+    FOREIGN KEY (cityId)
+    REFERENCES cities (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
+INSERT INTO districts (cityId, name) VALUES (1, 'Tepebaşı');
+INSERT INTO districts (cityId, name) VALUES (1, 'Odunpazarı');
+
+CREATE TABLE houses(
+    id int PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    title varchar(100) NOT NULL DEFAULT "House",
+    priceDaily int NOT NULL DEFAULT 10,
+    priceMonthly int NOT NULL DEFAULT 300,
+    status ENUM("active","passive") NOT NULL DEFAULT "active", 
+    isLocked boolean NOT NULL DEFAULT 1,
+    latCoordinate float(11,7) NOT NULL,
+    longCoordinate float(11,7) NOT NULL,
+    hasInternet boolean NOT NULL DEFAULT false,
+    hasHeater boolean NOT NULL DEFAULT false,
+    hasTv boolean NOT NULL DEFAULT false,
+    hasLaundry boolean NOT NULL DEFAULT false,
+    hasKitchen boolean NOT NULL DEFAULT false,
+    doubleBedCount int(20) NOT NULL DEFAULT 0,
+    singleBedCount int(20) NOT NULL DEFAULT 0,
+    singleSeatCount int(20) NOT NULL DEFAULT 0,
+    doubleSeatCount int(20) NOT NULL DEFAULT 0,
+    tripleSeatCount int(20) NOT NULL DEFAULT 0,
+    peopleStayCount int(30) NOT NULL DEFAULT 1,
+    countryId int NOT NULL,
+    cityId int NOT NULL,
+    districtId int NOT NULL,
+    createdAt DATETIME NOT NULL DEFAULT NOW(),
+    updatedAt DATETIME NOT NULL DEFAULT NOW(),
+    FOREIGN KEY (countryId) REFERENCES countries (id) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (cityId) REFERENCES cities (id) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (districtId) REFERENCES districts (id) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+
+
+CREATE TABLE housephotos(
+    id int PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    houseId int NOT NULL,
+    photo mediumtext NOT NULL,
+    type varchar(20) NOT NULL DEFAULT "house",
+    FOREIGN KEY (houseId)
+    REFERENCES houses (id)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
+
+CREATE TABLE users(
+    id int PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    firebaseId varchar(50) NOT NULL,
+    name varchar(50) NOT NULL,
+    userName varchar(50) NOT NULL,
+    email varchar(50) NOT NULL,
+    phoneNumber varchar(15) NOT NULL,
+    isVerified boolean NOT NULL DEFAULT true,
+    countryId int NOT NULL,
+    cityId int NOT NULL,
+    districtId int NOT NULL,
+    createdAt DATETIME NOT NULL DEFAULT NOW(),
+    updatedAt DATETIME NOT NULL DEFAULT NOW(),
+    FOREIGN KEY (countryId) REFERENCES countries (id) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (cityId) REFERENCES cities (id) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (districtId) REFERENCES districts (id) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE housemessages(
+    id int PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    senderId int NOT NULL,
+    houseId int NOT NULL,
+    message text NOT NULL,
+    createdAt DATETIME NOT NULL DEFAULT NOW(),
+    updatedAt DATETIME NOT NULL DEFAULT NOW(),
+    FOREIGN KEY (senderId) REFERENCES users (id) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (houseId) REFERENCES houses (id) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+
+
+CREATE TABLE owns(
+    id int PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    userId int NOT NULL,
+    houseId int NOT NULL,
+    createdAt DATETIME NOT NULL DEFAULT NOW(),
+    updatedAt DATETIME NOT NULL DEFAULT NOW(),
+    FOREIGN KEY (userId) REFERENCES users (id) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (houseId) REFERENCES houses (id) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+
+CREATE TABLE rents(
+    id int PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    userId int NOT NULL,
+    houseId int NOT NULL,
+    startsAt DATETIME NOT NULL DEFAULT NOW(),
+    endsAt DATETIME NOT NULL DEFAULT NOW(),
+    createdAt DATETIME NOT NULL DEFAULT NOW(),
+    updatedAt DATETIME NOT NULL DEFAULT NOW(),
+    FOREIGN KEY (userId) REFERENCES users (id) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (houseId) REFERENCES houses (id) ON UPDATE CASCADE ON DELETE CASCADE
+);

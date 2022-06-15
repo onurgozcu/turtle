@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "436311119328",
+    "project_id": "turtle-aca56",
+    "storage_bucket": "turtle-aca56.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:436311119328:android:aa62e6757255cd6dba8785",
+        "android_client_info": {
+          "package_name": "tr.edu.eskisehir.turtle"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "436311119328-i2hqals13n4gtdtt6a6p6kho0ug37fo4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlTkZAFJA57OK6UfPHAVx7hFqm_UGpbjU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "436311119328-i2hqals13n4gtdtt6a6p6kho0ug37fo4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
